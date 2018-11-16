@@ -10,11 +10,16 @@ import UIKit
 
 class TableVC: UITableViewController {
     
-    fileprivate let itemArray = ["Horizon Zero Dawn", "God of War", "Assassins Creed Origins", "Fallout 4", "Red Dead Redemption"]
+    fileprivate var itemArray = ["Horizon Zero Dawn", "God of War", "Assassins Creed Origins", "Fallout 4", "Red Dead Redemption"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.tableView.tableFooterView = UIView()
+    }
+    
+    //MARK:- Add items when its tapped
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        self.alert()
     }
 }
 
@@ -38,5 +43,27 @@ extension TableVC {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+//MARK:- Alert to add item to textfield
+extension TableVC {
+    private func alert() {
+        let alert = UIAlertController(title: "Add new todoey item", message: "", preferredStyle: .alert)
+        var textField = UITextField()
+        let okAction = UIAlertAction(title: "Add Item", style: .default) { [weak self] (action) in
+            guard let text = textField.text, let strongSelf = self else {
+                return
+            }
+            strongSelf.itemArray.append(text)
+            let indexPath = IndexPath(row: (strongSelf.itemArray.count - 1), section: 0)
+            strongSelf.tableView.insertRows(at: [indexPath], with: .fade)
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
     }
 }

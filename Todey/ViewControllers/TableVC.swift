@@ -11,10 +11,14 @@ import UIKit
 class TableVC: UITableViewController {
     
     fileprivate var itemArray = ["Horizon Zero Dawn", "God of War", "Assassins Creed Origins", "Fallout 4", "Red Dead Redemption"]
+    fileprivate let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
+        if let items = self.defaults.array(forKey: "ToDoListArray") as? [String] {
+            self.itemArray = items
+        }
     }
     
     //MARK:- Add items when its tapped
@@ -56,6 +60,7 @@ extension TableVC {
                 return
             }
             strongSelf.itemArray.append(text)
+            strongSelf.defaults.set(strongSelf.itemArray, forKey: "ToDoListArray")
             let indexPath = IndexPath(row: (strongSelf.itemArray.count - 1), section: 0)
             strongSelf.tableView.insertRows(at: [indexPath], with: .fade)
         }

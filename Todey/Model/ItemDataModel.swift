@@ -11,17 +11,15 @@ import CoreData
 
 class ItemDataModel {
     
-    //Load Items from core data
-    static func loadItems() -> [Item]? {
-        if let context = URLPaths.shared.context {
-            let request: NSFetchRequest<Item> = Item.fetchRequest()
-            do {
-                return try context.fetch(request)
-            }
-            catch {
-                print("Error fetching data from context \(error)")
-                return nil
-            }
+    //Load Items from core data based on search text
+    static func loadSearchResult(_ text: String) -> [Item]? {
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+        request.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        request.sortDescriptors = [sortDescriptor]
+        if let items = self.loadContext(request) {
+            return items
         }
         else {
             return nil
@@ -37,6 +35,17 @@ class ItemDataModel {
             return self.saveContext() ? item : nil
         }
         else {
+            return nil
+        }
+    }
+    
+    //Load the context
+    static func loadItems(_ request: NSFetchRequest<Item> = Item.fetchRequest()) -> [Item]? {
+        do {
+            return try URLPaths.shared.context?.fetch(request)
+        }
+        catch {
+            print("Error fetching data from context \(error)")
             return nil
         }
     }

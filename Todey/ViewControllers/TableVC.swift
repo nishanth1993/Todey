@@ -16,12 +16,25 @@ class TableVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
-        self.loadItems()
+        self.itemArray = ItemDataModel.loadItems() ?? []
     }
     
     //MARK:- Add items when its tapped
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         self.alert()
+    }
+}
+
+//MARK:- Search bar delegates
+extension TableVC: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let text = searchBar.text, !text.isEmpty {
+            self.itemArray = ItemDataModel.loadSearchResult(text) ?? []
+        }
+        else {
+            self.itemArray = ItemDataModel.loadItems() ?? []
+        }
+        self.tableView.reloadData()
     }
 }
 
@@ -70,20 +83,11 @@ extension TableVC {
 
 //MARK:- Core Data operations
 extension TableVC {
-    //Load Items
-    private func loadItems() {
-        guard let items = ItemDataModel.loadItems() else {
-            return
-        }
-        self.itemArray = items
-    }
-    
     //Save Items
     private func saveItem(_ text: String) {
-        guard let item = ItemDataModel.saveDataUsingCoreData(text) else {
-            return
+        if let item = ItemDataModel.saveDataUsingCoreData(text) {
+            self.itemArray.append(item)
         }
-        self.itemArray.append(item)
     }
     
     //Delete Items

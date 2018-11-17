@@ -10,22 +10,23 @@ import UIKit
 
 class TableVC: UITableViewController {
     
+    fileprivate let datafilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     fileprivate var itemArray = [Item]()
-    fileprivate let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
-        self.setupData()
-        if let items = self.defaults.array(forKey: "ToDoListArray") as? [Item] {
-            self.itemArray = items
-        }
+        self.loadItems()
     }
     
-    private func setupData() {
-        for i in 1...100 {
-            let item = Item("\(i)", false)
-            self.itemArray.append(item)
+    private func loadItems() {
+        let decoder = PropertyListDecoder()
+        do {
+            let data = try Data(contentsOf: self.datafilePath!)
+            self.itemArray = try decoder.decode([Item].self, from: data)
+        }
+        catch {
+            print("Error decoding in item array \(error)")
         }
     }
     
@@ -51,6 +52,7 @@ extension TableVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.itemArray[indexPath.row].done = !self.itemArray[indexPath.row].done
+        self.saveDataUsingCustomPlist()
         tableView.reloadRows(at: [indexPath], with: .fade)
     }
 }
@@ -65,7 +67,7 @@ extension TableVC {
                 return
             }
             strongSelf.itemArray.append(Item(text, false))
-            strongSelf.defaults.set(strongSelf.itemArray, forKey: "ToDoListArray")
+            strongSelf.saveDataUsingCustomPlist()
             let indexPath = IndexPath(row: (strongSelf.itemArray.count - 1), section: 0)
             strongSelf.tableView.insertRows(at: [indexPath], with: .fade)
         }
@@ -75,5 +77,16 @@ extension TableVC {
         }
         alert.addAction(okAction)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func saveDataUsingCustomPlist() {
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(self.itemArray)
+            try data.write(to: self.datafilePath!)
+        }
+        catch {
+            print("Error encoding in item array \(error)")
+        }
     }
 }

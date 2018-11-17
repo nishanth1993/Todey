@@ -10,14 +10,22 @@ import UIKit
 
 class TableVC: UITableViewController {
     
-    fileprivate var itemArray = ["Horizon Zero Dawn", "God of War", "Assassins Creed Origins", "Fallout 4", "Red Dead Redemption"]
+    fileprivate var itemArray = [Item]()
     fileprivate let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
-        if let items = self.defaults.array(forKey: "ToDoListArray") as? [String] {
+        self.setupData()
+        if let items = self.defaults.array(forKey: "ToDoListArray") as? [Item] {
             self.itemArray = items
+        }
+    }
+    
+    private func setupData() {
+        for i in 1...100 {
+            let item = Item("\(i)", false)
+            self.itemArray.append(item)
         }
     }
     
@@ -35,18 +43,15 @@ extension TableVC {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = self.itemArray[indexPath.row]
+        let item = self.itemArray[indexPath.row]
+        cell.textLabel?.text = item.title
+        cell.accessoryType = item.done ? .checkmark : .none
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
-        else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
-        tableView.deselectRow(at: indexPath, animated: true)
+        self.itemArray[indexPath.row].done = !self.itemArray[indexPath.row].done
+        tableView.reloadRows(at: [indexPath], with: .fade)
     }
 }
 
@@ -59,7 +64,7 @@ extension TableVC {
             guard let text = textField.text, let strongSelf = self else {
                 return
             }
-            strongSelf.itemArray.append(text)
+            strongSelf.itemArray.append(Item(text, false))
             strongSelf.defaults.set(strongSelf.itemArray, forKey: "ToDoListArray")
             let indexPath = IndexPath(row: (strongSelf.itemArray.count - 1), section: 0)
             strongSelf.tableView.insertRows(at: [indexPath], with: .fade)

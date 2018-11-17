@@ -12,11 +12,16 @@ import CoreData
 class TableVC: UITableViewController {
     
     fileprivate var itemArray = [Item]()
+    var selectedCategory: Category? {
+        didSet {
+            let name = selectedCategory?.name
+            self.itemArray = DataModel.loadItems(Item.fetchRequest(), nil, name!) ?? []
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
-        self.itemArray = ItemDataModel.loadItems() ?? []
     }
     
     //MARK:- Add items when its tapped
@@ -28,13 +33,17 @@ class TableVC: UITableViewController {
 //MARK:- Search bar delegates
 extension TableVC: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let text = searchBar.text, !text.isEmpty {
-            self.itemArray = ItemDataModel.loadSearchResult(text) ?? []
-        }
-        else {
-            self.itemArray = ItemDataModel.loadItems() ?? []
+        if let name = self.selectedCategory?.name, let text = searchBar.text, !text.isEmpty {
+            self.itemArray = DataModel.loadSearchResult(text, name) ?? []
         }
         self.tableView.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let name = self.selectedCategory?.name, searchText == "" {
+            self.itemArray = DataModel.loadItems(Item.fetchRequest(), nil, name) ?? []
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -54,7 +63,7 @@ extension TableVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.itemArray[indexPath.row].done = !self.itemArray[indexPath.row].done
-        _ = ItemDataModel.saveContext()
+        _ = DataModel.saveContext()
         tableView.reloadRows(at: [indexPath], with: .fade)
     }
 }
@@ -83,17 +92,17 @@ extension TableVC {
 
 //MARK:- Core Data operations
 extension TableVC {
-    //Save Items
+    //Save Item
     private func saveItem(_ text: String) {
-        if let item = ItemDataModel.saveDataUsingCoreData(text) {
+        if let item = DataModel.saveItem(text, self.selectedCategory) {
             self.itemArray.append(item)
         }
     }
     
-    //Delete Items
+    //Delete Item
     private func deleteItem(_ index: Int) {
         URLPaths.shared.context?.delete(self.itemArray[index])
         self.itemArray.remove(at: index)
-        _ = ItemDataModel.saveContext()
+        _ = DataModel.saveContext()
     }
 }

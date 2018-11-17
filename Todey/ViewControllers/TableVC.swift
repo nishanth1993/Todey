@@ -7,27 +7,16 @@
 //
 
 import UIKit
+import CoreData
 
 class TableVC: UITableViewController {
     
-    fileprivate let datafilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     fileprivate var itemArray = [Item]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
         self.loadItems()
-    }
-    
-    private func loadItems() {
-        let decoder = PropertyListDecoder()
-        do {
-            let data = try Data(contentsOf: self.datafilePath!)
-            self.itemArray = try decoder.decode([Item].self, from: data)
-        }
-        catch {
-            print("Error decoding in item array \(error)")
-        }
     }
     
     //MARK:- Add items when its tapped
@@ -52,7 +41,7 @@ extension TableVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.itemArray[indexPath.row].done = !self.itemArray[indexPath.row].done
-        self.saveDataUsingCustomPlist()
+        _ = ItemDataModel.saveContext()
         tableView.reloadRows(at: [indexPath], with: .fade)
     }
 }
@@ -66,8 +55,7 @@ extension TableVC {
             guard let text = textField.text, let strongSelf = self else {
                 return
             }
-            strongSelf.itemArray.append(Item(text, false))
-            strongSelf.saveDataUsingCustomPlist()
+            self?.saveItem(text)
             let indexPath = IndexPath(row: (strongSelf.itemArray.count - 1), section: 0)
             strongSelf.tableView.insertRows(at: [indexPath], with: .fade)
         }
@@ -78,15 +66,30 @@ extension TableVC {
         alert.addAction(okAction)
         self.present(alert, animated: true, completion: nil)
     }
+}
+
+//MARK:- Core Data operations
+extension TableVC {
+    //Load Items
+    private func loadItems() {
+        guard let items = ItemDataModel.loadItems() else {
+            return
+        }
+        self.itemArray = items
+    }
     
-    func saveDataUsingCustomPlist() {
-        let encoder = PropertyListEncoder()
-        do {
-            let data = try encoder.encode(self.itemArray)
-            try data.write(to: self.datafilePath!)
+    //Save Items
+    private func saveItem(_ text: String) {
+        guard let item = ItemDataModel.saveDataUsingCoreData(text) else {
+            return
         }
-        catch {
-            print("Error encoding in item array \(error)")
-        }
+        self.itemArray.append(item)
+    }
+    
+    //Delete Items
+    private func deleteItem(_ index: Int) {
+        URLPaths.shared.context?.delete(self.itemArray[index])
+        self.itemArray.remove(at: index)
+        _ = ItemDataModel.saveContext()
     }
 }

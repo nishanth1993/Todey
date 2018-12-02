@@ -14,7 +14,7 @@ class CustomPlist {
         let decoder = PropertyListDecoder()
         do {
             let data = try Data(contentsOf: URLPaths.shared.datafilePath!)
-            let itemArray = try decoder.decode([Item].self, from: data)
+            let items = try decoder.decode([Item].self, from: data)
             return itemArray
         }
         catch {

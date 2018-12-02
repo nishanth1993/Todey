@@ -7,15 +7,17 @@
 //
 
 import UIKit
+import RealmSwift
 
 class CategoryTableVC: UITableViewController {
     
-    fileprivate var categoryArray = [Category]()
+    fileprivate var categoryArray: Results<RealmCategory>?
+    //fileprivate var categoryArray = [Category]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
-        self.categoryArray = DataModel.loadCategories() ?? []
+        self.categoryArray = RealmDataModel.getCategories()
     }
     
     //MARK:- Add button tapped
@@ -25,7 +27,7 @@ class CategoryTableVC: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destinationVC = segue.destination as? TableVC, let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = self.categoryArray[indexPath.row]
+            destinationVC.selectedCategory = self.categoryArray?[indexPath.row]
         }
     }
 }
@@ -33,13 +35,12 @@ class CategoryTableVC: UITableViewController {
 //MARK:- Tableview delegate and datasource methods
 extension CategoryTableVC {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.categoryArray.count
+        return self.categoryArray?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCategoryCell", for: indexPath)
-        let category = self.categoryArray[indexPath.row]
-        cell.textLabel?.text = category.name
+        cell.textLabel?.text = self.categoryArray?[indexPath.row].name
         return cell
     }
     
@@ -89,12 +90,10 @@ extension CategoryTableVC {
         let alert = UIAlertController(title: "Add a new category", message: "", preferredStyle: .alert)
         var textField = UITextField()
         let okAction = UIAlertAction(title: "Add category", style: .default) { [weak self] (action) in
-            guard let text = textField.text, let strongSelf = self else {
+            guard let text = textField.text else {
                 return
             }
-            self?.saveItem(text)
-            let indexPath = IndexPath(row: (strongSelf.categoryArray.count - 1), section: 0)
-            strongSelf.tableView.insertRows(at: [indexPath], with: .fade)
+            self?.saveCategory(text)
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -105,12 +104,25 @@ extension CategoryTableVC {
     }
 }
 
-//MARK:- Core Data operations
+//MARK:- Realm operations
 extension CategoryTableVC {
+    //Save Category
+    private func saveCategory(_ text: String) {
+        if let _ = RealmDataModel.saveCategory(text), let category = self.categoryArray {
+            let indexPath = IndexPath(row: (category.count - 1), section: 0)
+            self.tableView.insertRows(at: [indexPath], with: .fade)
+        }
+    }
+}
+
+//MARK:- Core Data operations
+/*extension CategoryTableVC {
     //Save Category
     private func saveItem(_ text: String) {
         if let category = DataModel.saveCategory(text) {
             self.categoryArray.append(category)
+            let indexPath = IndexPath(row: (self.categoryArray.count - 1), section: 0)
+            self.tableView.insertRows(at: [indexPath], with: .fade)
         }
     }
     
@@ -120,4 +132,4 @@ extension CategoryTableVC {
         self.categoryArray.remove(at: index)
         _ = DataModel.saveContext()
     }
-}
+}*/

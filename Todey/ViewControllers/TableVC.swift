@@ -8,16 +8,25 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class TableVC: UITableViewController {
     
-    fileprivate var itemArray = [Item]()
-    var selectedCategory: Category? {
+    fileprivate var items: Results<RealmItem>?
+    //fileprivate var items = [Item]()
+    var selectedCategory: RealmCategory? {
         didSet {
-            let name = selectedCategory?.name
-            self.itemArray = DataModel.loadItems(Item.fetchRequest(), nil, name!) ?? []
+            self.items = RealmDataModel.loadItems(self.selectedCategory)
         }
     }
+    
+    /*var selectedCategory: Category? {
+        didSet {
+            let name = selectedCategory?.name
+            self.items = DataModel.loadItems(Item.fetchRequest(), nil, name!) ?? []
+        }
+     }*/
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,14 +43,14 @@ class TableVC: UITableViewController {
 extension TableVC: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let name = self.selectedCategory?.name, let text = searchBar.text, !text.isEmpty {
-            self.itemArray = DataModel.loadSearchResult(text, name) ?? []
+            self.items = RealmDataModel.loadSearchResult(self.selectedCategory) ?? []
         }
         self.tableView.reloadData()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let name = self.selectedCategory?.name, searchText == "" {
-            self.itemArray = DataModel.loadItems(Item.fetchRequest(), nil, name) ?? []
+        if searchText == "" {
+            self.items = RealmDataModel.loadItems(self.selectedCategory)
             self.tableView.reloadData()
         }
     }
@@ -50,21 +59,23 @@ extension TableVC: UISearchBarDelegate {
 //MARK:- Tableview Delegate and Datasource methods
 extension TableVC {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.itemArray.count
+        return self.items?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        let item = self.itemArray[indexPath.row]
-        cell.textLabel?.text = item.title
-        cell.accessoryType = item.done ? .checkmark : .none
+        let item = self.items?[indexPath.row]
+        cell.textLabel?.text = item?.title
+        cell.accessoryType = item?.done ?? false ? .checkmark : .none
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.itemArray[indexPath.row].done = !self.itemArray[indexPath.row].done
-        _ = DataModel.saveContext()
-        tableView.reloadRows(at: [indexPath], with: .fade)
+        //self.items?[indexPath.row].done = !self.items?[indexPath.row].done ?? true
+        //_ = DataModel.saveContext()
+        if let item = self.items?[indexPath.row], RealmDataModel.updateItem(item){
+            tableView.reloadRows(at: [indexPath], with: .fade)
+        }
     }
 }
 
@@ -74,12 +85,10 @@ extension TableVC {
         let alert = UIAlertController(title: "Add new todoey item", message: "", preferredStyle: .alert)
         var textField = UITextField()
         let okAction = UIAlertAction(title: "Add Item", style: .default) { [weak self] (action) in
-            guard let text = textField.text, let strongSelf = self else {
+            guard let text = textField.text else {
                 return
             }
             self?.saveItem(text)
-            let indexPath = IndexPath(row: (strongSelf.itemArray.count - 1), section: 0)
-            strongSelf.tableView.insertRows(at: [indexPath], with: .fade)
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -90,7 +99,25 @@ extension TableVC {
     }
 }
 
-//MARK:- Core Data operations
+//MARK:- Realm operations
+extension TableVC {
+    //Save Item
+    private func saveItem(_ text: String) {
+        if let category = self.selectedCategory, let items = self.items, let _ = RealmDataModel.saveItem(text, category) {
+            let indexPath = IndexPath(row: (items.count - 1), section: 0)
+            self.tableView.insertRows(at: [indexPath], with: .fade)
+        }
+    }
+    
+    //Delete Item
+    private func deleteItem(_ index: Int) {
+        if let item = self.items?[index], RealmDataModel.deleteItem(item) {
+            self.tableView.reloadData()
+        }
+    }
+}
+
+/*//MARK:- Core Data operations
 extension TableVC {
     //Save Item
     private func saveItem(_ text: String) {
@@ -105,4 +132,4 @@ extension TableVC {
         self.itemArray.remove(at: index)
         _ = DataModel.saveContext()
     }
-}
+}*/

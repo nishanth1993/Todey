@@ -17,6 +17,9 @@
 		62F05AE921A018B700313CAA /* URLPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AE821A018B700313CAA /* URLPaths.swift */; };
 		62F05AEB21A01BF900313CAA /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AEA21A01BF900313CAA /* DataModel.swift */; };
 		62F05AED21A0346100313CAA /* CategoryTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AEC21A0346100313CAA /* CategoryTableVC.swift */; };
+		9896BEBA21A4100300E30081 /* RealmItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9896BEB921A4100300E30081 /* RealmItem.swift */; };
+		9896BEBD21A421A600E30081 /* RealmCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9896BEBC21A421A600E30081 /* RealmCategory.swift */; };
+		9896BEBF21A4260C00E30081 /* RealmDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9896BEBE21A4260C00E30081 /* RealmDataModel.swift */; };
 		B19B3C6F754F0BEF04293165 /* Pods_Todey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 589349147BD0E1E577096F03 /* Pods_Todey.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +38,9 @@
 		62F05AE821A018B700313CAA /* URLPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLPaths.swift; sourceTree = "<group>"; };
 		62F05AEA21A01BF900313CAA /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		62F05AEC21A0346100313CAA /* CategoryTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableVC.swift; sourceTree = "<group>"; };
+		9896BEB921A4100300E30081 /* RealmItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmItem.swift; sourceTree = "<group>"; };
+		9896BEBC21A421A600E30081 /* RealmCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmCategory.swift; sourceTree = "<group>"; };
+		9896BEBE21A4260C00E30081 /* RealmDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmDataModel.swift; sourceTree = "<group>"; };
 		BF3BDA358F28278B102374E0 /* Pods-Todey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Todey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Todey/Pods-Todey.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,8 +113,19 @@
 				62F05AE821A018B700313CAA /* URLPaths.swift */,
 				62F05AE621A0179800313CAA /* CustomPlist.swift */,
 				62F05AEA21A01BF900313CAA /* DataModel.swift */,
+				9896BEBB21A4216300E30081 /* Realm Data Model */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		9896BEBB21A4216300E30081 /* Realm Data Model */ = {
+			isa = PBXGroup;
+			children = (
+				9896BEBC21A421A600E30081 /* RealmCategory.swift */,
+				9896BEB921A4100300E30081 /* RealmItem.swift */,
+				9896BEBE21A4260C00E30081 /* RealmDataModel.swift */,
+			);
+			path = "Realm Data Model";
 			sourceTree = "<group>";
 		};
 		C726C8F7CD0C654110C5BB0C /* Frameworks */ = {
@@ -236,10 +253,13 @@
 				62F05AEB21A01BF900313CAA /* DataModel.swift in Sources */,
 				620D8DBE219E86220063E8A1 /* TableVC.swift in Sources */,
 				62F05AED21A0346100313CAA /* CategoryTableVC.swift in Sources */,
+				9896BEBF21A4260C00E30081 /* RealmDataModel.swift in Sources */,
 				62F05AE921A018B700313CAA /* URLPaths.swift in Sources */,
 				62F05AC4219FEFD400313CAA /* DataModel.xcdatamodeld in Sources */,
+				9896BEBD21A421A600E30081 /* RealmCategory.swift in Sources */,
 				620D8DBC219E86220063E8A1 /* AppDelegate.swift in Sources */,
 				62F05AE721A0179800313CAA /* CustomPlist.swift in Sources */,
+				9896BEBA21A4100300E30081 /* RealmItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

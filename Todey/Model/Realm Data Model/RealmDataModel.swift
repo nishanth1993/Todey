@@ -15,10 +15,10 @@ class RealmDataModel {
     //Save category to realm
     static func saveCategory(_ text: String) -> RealmCategory? {
         let category = RealmCategory()
-        category.name = text
         do {
             let realm = try Realm()
             try realm.write {
+                category.name = text
                 realm.add(category)
             }
             return category
@@ -47,13 +47,13 @@ extension RealmDataModel {
     //Save item
     static func saveItem(_ text: String, _ category: RealmCategory) -> RealmItem? {
         let item = RealmItem()
-        item.title = text
-        item.done = false
-        category.items.append(item)
         do {
             let realm = try Realm()
             try realm.write {
-                realm.add(item)
+                item.title = text
+                item.done = false
+                item.date = Date()
+                category.items.append(item)
             }
             return item
         }
@@ -74,18 +74,9 @@ extension RealmDataModel {
     }
     
     //Load Items based on search text
-    static func loadSearchResult(_ text: String, _ category: String) -> [Item]? {
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
-        request.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        request.sortDescriptors = [sortDescriptor]
-        if let items = self.loadItems(request, predicate, category) {
-            return items
-        }
-        else {
-            return nil
-        }
+    static func loadSearchResult(_ text: String, _ category: RealmCategory) -> Results<RealmItem>? {
+        let items = category.items.filter("title CONTAINS[cd] %@", text).sorted(byKeyPath: "date", ascending: true)
+        return items
     }
     
     //Update item

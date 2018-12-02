@@ -42,8 +42,8 @@ class TableVC: UITableViewController {
 //MARK:- Search bar delegates
 extension TableVC: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let name = self.selectedCategory?.name, let text = searchBar.text, !text.isEmpty {
-            self.items = RealmDataModel.loadSearchResult(self.selectedCategory) ?? []
+        if let category = self.selectedCategory, let text = searchBar.text, !text.isEmpty {
+            self.items = RealmDataModel.loadSearchResult(text, category)
         }
         self.tableView.reloadData()
     }
@@ -104,8 +104,9 @@ extension TableVC {
     //Save Item
     private func saveItem(_ text: String) {
         if let category = self.selectedCategory, let items = self.items, let _ = RealmDataModel.saveItem(text, category) {
-            let indexPath = IndexPath(row: (items.count - 1), section: 0)
-            self.tableView.insertRows(at: [indexPath], with: .fade)
+            self.tableView.reloadData()
+            //let indexPath = IndexPath(row: (items.count - 1), section: 0)
+            //self.tableView.insertRows(at: [indexPath], with: .fade)
         }
     }
     

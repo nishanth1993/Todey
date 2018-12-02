@@ -109,13 +109,29 @@
 		62F05ABF219FD19500313CAA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				62F05AC2219FEFD400313CAA /* DataModel.xcdatamodeld */,
 				62F05AE821A018B700313CAA /* URLPaths.swift */,
-				62F05AE621A0179800313CAA /* CustomPlist.swift */,
-				62F05AEA21A01BF900313CAA /* DataModel.swift */,
+				62F05AEF21B3A15A00313CAA /* Plist Model */,
+				62F05AEE21B3A13E00313CAA /* Core Data Model */,
 				9896BEBB21A4216300E30081 /* Realm Data Model */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		62F05AEE21B3A13E00313CAA /* Core Data Model */ = {
+			isa = PBXGroup;
+			children = (
+				62F05AEA21A01BF900313CAA /* DataModel.swift */,
+				62F05AC2219FEFD400313CAA /* DataModel.xcdatamodeld */,
+			);
+			path = "Core Data Model";
+			sourceTree = "<group>";
+		};
+		62F05AEF21B3A15A00313CAA /* Plist Model */ = {
+			isa = PBXGroup;
+			children = (
+				62F05AE621A0179800313CAA /* CustomPlist.swift */,
+			);
+			path = "Plist Model";
 			sourceTree = "<group>";
 		};
 		9896BEBB21A4216300E30081 /* Realm Data Model */ = {

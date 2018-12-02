@@ -17,6 +17,7 @@
 		62F05AE921A018B700313CAA /* URLPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AE821A018B700313CAA /* URLPaths.swift */; };
 		62F05AEB21A01BF900313CAA /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AEA21A01BF900313CAA /* DataModel.swift */; };
 		62F05AED21A0346100313CAA /* CategoryTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AEC21A0346100313CAA /* CategoryTableVC.swift */; };
+		62F05AF121B3B45B00313CAA /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F05AF021B3B45B00313CAA /* SwipeTableViewController.swift */; };
 		9896BEBA21A4100300E30081 /* RealmItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9896BEB921A4100300E30081 /* RealmItem.swift */; };
 		9896BEBD21A421A600E30081 /* RealmCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9896BEBC21A421A600E30081 /* RealmCategory.swift */; };
 		9896BEBF21A4260C00E30081 /* RealmDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9896BEBE21A4260C00E30081 /* RealmDataModel.swift */; };
@@ -38,6 +39,7 @@
 		62F05AE821A018B700313CAA /* URLPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLPaths.swift; sourceTree = "<group>"; };
 		62F05AEA21A01BF900313CAA /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		62F05AEC21A0346100313CAA /* CategoryTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableVC.swift; sourceTree = "<group>"; };
+		62F05AF021B3B45B00313CAA /* SwipeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewController.swift; sourceTree = "<group>"; };
 		9896BEB921A4100300E30081 /* RealmItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmItem.swift; sourceTree = "<group>"; };
 		9896BEBC21A421A600E30081 /* RealmCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmCategory.swift; sourceTree = "<group>"; };
 		9896BEBE21A4260C00E30081 /* RealmDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmDataModel.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 		620D8DCD219E9F700063E8A1 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				62F05AF021B3B45B00313CAA /* SwipeTableViewController.swift */,
 				62F05AEC21A0346100313CAA /* CategoryTableVC.swift */,
 				620D8DBD219E86220063E8A1 /* TableVC.swift */,
 			);
@@ -230,11 +233,13 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Todey/Pods-Todey-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -268,6 +273,7 @@
 			files = (
 				62F05AEB21A01BF900313CAA /* DataModel.swift in Sources */,
 				620D8DBE219E86220063E8A1 /* TableVC.swift in Sources */,
+				62F05AF121B3B45B00313CAA /* SwipeTableViewController.swift in Sources */,
 				62F05AED21A0346100313CAA /* CategoryTableVC.swift in Sources */,
 				9896BEBF21A4260C00E30081 /* RealmDataModel.swift in Sources */,
 				62F05AE921A018B700313CAA /* URLPaths.swift in Sources */,

@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class CategoryTableVC: UITableViewController {
+class CategoryTableVC: SwipeTableViewController {
     
     fileprivate var categoryArray: Results<RealmCategory>?
     //fileprivate var categoryArray = [Category]()
@@ -30,6 +30,13 @@ class CategoryTableVC: UITableViewController {
             destinationVC.selectedCategory = self.categoryArray?[indexPath.row]
         }
     }
+    
+    //Delete Category
+    override func updateModel(at indexPath: IndexPath) {
+        if let category = self.categoryArray?[indexPath.row], RealmDataModel.deleteCategory(category) {
+            //self.tableView.reloadData()
+        }
+    }
 }
 
 //MARK:- Tableview delegate and datasource methods
@@ -39,7 +46,8 @@ extension CategoryTableVC {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCategoryCell", for: indexPath)
+        super.identifier = "ToDoCategoryCell"
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = self.categoryArray?[indexPath.row].name
         return cell
     }
@@ -47,41 +55,6 @@ extension CategoryTableVC {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: "goToItems", sender: self)
     }
-    
-    /*
-     // Override to support conditional editing of the table view.
-     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the specified item to be editable.
-     return true
-     }
-     */
-    
-    /*
-     // Override to support editing the table view.
-     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-     if editingStyle == .delete {
-     // Delete the row from the data source
-     tableView.deleteRows(at: [indexPath], with: .fade)
-     } else if editingStyle == .insert {
-     // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-     }
-     }
-     */
-    
-    /*
-     // Override to support rearranging the table view.
-     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-     
-     }
-     */
-    
-    /*
-     // Override to support conditional rearranging of the table view.
-     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
-     }
-     */
 }
 
 //MARK:- Alert to add item to textfield

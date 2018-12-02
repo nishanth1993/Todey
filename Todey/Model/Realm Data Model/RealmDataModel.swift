@@ -36,8 +36,23 @@ class RealmDataModel {
             return realm.objects(RealmCategory.self)
         }
         catch {
-            print("Error getting data from realm \(error)")
+            print("Error fetching data from realm \(error)")
             return nil
+        }
+    }
+    
+    //Delete category
+    static func deleteCategory(_ category: RealmCategory) -> Bool {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.delete(category)
+            }
+            return true
+        }
+        catch {
+            print("Error saving data from realm \(error)")
+            return false
         }
     }
 }
@@ -89,7 +104,7 @@ extension RealmDataModel {
             return true
         }
         catch {
-            print("Error saving data into realm \(error)")
+            print("Error updating data into realm \(error)")
             return false
         }
     }
@@ -104,7 +119,7 @@ extension RealmDataModel {
             return true
         }
         catch {
-            print("Error saving data into realm \(error)")
+            print("Error deleting data from realm \(error)")
             return false
         }
     }

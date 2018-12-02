@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryTableVC: SwipeTableViewController {
     
@@ -16,7 +17,7 @@ class CategoryTableVC: SwipeTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.tableFooterView = UIView()
+        self.tableView.separatorStyle = .none
         self.categoryArray = RealmDataModel.getCategories()
     }
     
@@ -48,7 +49,12 @@ extension CategoryTableVC {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         super.identifier = "ToDoCategoryCell"
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.textLabel?.text = self.categoryArray?[indexPath.row].name
+        let category = self.categoryArray?[indexPath.row]
+        cell.textLabel?.text = category?.name
+        if let color = UIColor(hexString: category?.color ?? "#ffffff") {
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+        }
         return cell
     }
     

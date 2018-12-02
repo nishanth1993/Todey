@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import ChameleonFramework
 
 //MARK:- Category Data Model
 class RealmDataModel {
@@ -19,6 +20,7 @@ class RealmDataModel {
             let realm = try Realm()
             try realm.write {
                 category.name = text
+                category.color = UIColor.randomFlat.hexValue()
                 realm.add(category)
             }
             return category

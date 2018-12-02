@@ -9,8 +9,9 @@
 import UIKit
 import CoreData
 import RealmSwift
+import ChameleonFramework
 
-class TableVC: UITableViewController {
+class TableVC: SwipeTableViewController {
     
     fileprivate var items: Results<RealmItem>?
     //fileprivate var items = [Item]()
@@ -30,12 +31,19 @@ class TableVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.tableFooterView = UIView()
+        self.tableView.separatorStyle = .none
     }
     
     //MARK:- Add items when its tapped
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         self.alert()
+    }
+    
+    //Delete Item
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = self.items?[indexPath.row], RealmDataModel.deleteItem(item) {
+            
+        }
     }
 }
 
@@ -63,10 +71,17 @@ extension TableVC {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        let item = self.items?[indexPath.row]
-        cell.textLabel?.text = item?.title
-        cell.accessoryType = item?.done ?? false ? .checkmark : .none
+        super.identifier = "ToDoItemCell"
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        if let item = self.items?[indexPath.row] {
+            cell.textLabel?.text = item.title
+            cell.accessoryType = item.done ? .checkmark : .none
+            let percentage = (CGFloat(indexPath.row) / CGFloat(items!.count))
+            if let color = UIColor(hexString: selectedCategory?.color ?? "#ffffff") {
+                cell.backgroundColor = color.darken(byPercentage: percentage)
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
+        }
         return cell
     }
     
@@ -103,17 +118,10 @@ extension TableVC {
 extension TableVC {
     //Save Item
     private func saveItem(_ text: String) {
-        if let category = self.selectedCategory, let items = self.items, let _ = RealmDataModel.saveItem(text, category) {
+        if let category = self.selectedCategory, let _ = self.items, let _ = RealmDataModel.saveItem(text, category) {
             self.tableView.reloadData()
             //let indexPath = IndexPath(row: (items.count - 1), section: 0)
             //self.tableView.insertRows(at: [indexPath], with: .fade)
-        }
-    }
-    
-    //Delete Item
-    private func deleteItem(_ index: Int) {
-        if let item = self.items?[index], RealmDataModel.deleteItem(item) {
-            self.tableView.reloadData()
         }
     }
 }
